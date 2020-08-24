@@ -24,6 +24,9 @@ class course(models.Model):
 	subject = models.CharField(max_length=15, choices = subject_choices, default = 1)
 	grade = models.CharField(max_length=2, choices = grade_choices)
 
+	def getFields(self):
+		return ["name","price","teacher","duration","subject","grade"]
+
 	def __str__(self):
 		return self.name
 

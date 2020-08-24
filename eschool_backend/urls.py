@@ -20,5 +20,6 @@ from app1 import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('search/<str:val>', views.search.as_view()),
-    path('', views.course_view.as_view())
+    path('', views.course_view.as_view()),
+    path('filter', views.Filter.as_view()),
 ]

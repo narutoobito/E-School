@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>filter</title>
+</head>
+<h1>FILTERS</h1>
+<h2>Choose your filter</h2>
+<h3>Subject</h3>
+<div class="subject">
+<input type="checkbox" value="physics">physics
+<input type="checkbox" value="chemistry">chemistry
+<input type="checkbox" value="computer">computer
+<input type="checkbox" value="maths">maths
+<input type="checkbox" value="english">english
+</div>
+<h3>Class</h3>
+<div class="class">
+<input type="checkbox" value="1">1
+<input type="checkbox" value="2">2
+<input type="checkbox" value="3">3
+<input type="checkbox" value="4">4
+<input type="checkbox" value="5">5
+<input type="checkbox" value="6">6
+<input type="checkbox" value="7">7
+<input type="checkbox" value="8">8
+<input type="checkbox" value="9">9
+<input type="checkbox" value="10">10
+</div>
+<h3>price</h3>
+<select class="price">
+    <option value="500">500</option>-
+    <option value="1000">1000</option>
+    <option value="5000">5000</option>
+    <option value="10000">10000</option>
+    <option value="9999999999">NO LIMIT</option>
+</select>
+<h5>teacher</h5>
+<select class="teacher">
+    <option selected="true" value="">Choose teacher</option>
+</select>
+
+<input type="submit" class="btn">
+
+<script>
+let submit_subject="";
+let submit_class="";
+let submit_price;
+let options=[];
+
+// fetching name of all teachers
+fetch("http://127.0.0.1:8000/").then(response=>response.json())
+.then(result=>{
+teacher=document.querySelector(".teacher");
+result.map(ele=>{
+
+if(!options.includes(ele.teacher))
+    {
+    opt=document.createElement("option");
+    opt.value=opt.text=ele.teacher;
+    teacher.appendChild(opt)
+    options.push(ele.teacher)
+    }
+})})
+
+
+
+// selecting the submit button from the dom
+btn=document.querySelector(".btn")
+
+//Listening for submit
+btn.addEventListener("click",()=>{
+
+subject=document.querySelectorAll(".subject input")
+subject.forEach((ele)=>{if(ele.checked) submit_subject += ele.value +" "})
+
+classes = document.querySelectorAll(".class input")
+classes.forEach((ele)=>{if(ele.checked) submit_class += ele.value+" "})
+
+submit_price=parseInt(document.querySelector(".price").value);
+
+
+submit_result={};
+
+
+if(submit_subject){
+submit_subject=submit_subject.trimEnd()
+submit_result["name"]=submit_subject;
+}
+if(submit_class){
+submit_class=submit_class.trimEnd()
+submit_result["grade"]=submit_class;
+}
+if(submit_price){
+submit_result["price"]=submit_price;
+}
+if(teacher.value!=""){
+submit_result["teacher"]=teacher.value;
+}
+
+console.log(submit_result)
+
+fetch("http://127.0.0.1:8000/filter",
+{
+method:'POST',
+headers:{
+'Content-Type': 'application/json',
+},
+body: JSON.stringify(submit_result),
+}).then(response=>response.json()).then(result=>console.log(result));
+
+
+// Resetting the the variable so that previous values will not be added to the new request
+
+submit_subject="";
+submit_class="";
+
+
+})
+</script>
+
+</body>
+</html>
